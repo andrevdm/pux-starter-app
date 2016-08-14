@@ -1,19 +1,34 @@
 module App.Counter where
 
-import Prelude ((+), (-), const, show)
+import Prelude ((+), (-), ($), const, show, pure, negate)
+import Pux (noEffects, EffModel)
 import Pux.Html (Html, div, span, button, text)
 import Pux.Html.Events (onClick)
+import Network.HTTP.Affjax (AJAX)
+import DOM (DOM)
 
-data Action = Increment | Decrement
+data Action = Increment | Decrement | ReceiveInc Int
 
 type State = Int
 
 init :: State
 init = 0
 
-update :: Action -> State -> State
-update Increment state = state + 1
-update Decrement state = state - 1
+update :: Action -> State -> EffModel State Action (dom :: DOM, ajax :: AJAX)
+update (ReceiveInc i) state= 
+  noEffects $ state + i
+update Increment state =
+  { state: state
+  , effects: [ do
+                  pure $ ReceiveInc 1
+             ]
+  }
+update Decrement state =
+  { state: state
+  , effects: [ do
+                  pure $ ReceiveInc (-1)
+             ]
+  }
 
 view :: State -> Html Action
 view state =
