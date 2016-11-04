@@ -1,6 +1,6 @@
 module App.Counter where
 
-import Prelude ((+), (-), ($), const, show, pure, negate)
+import Prelude (const, show, negate, pure, ($), (+))
 import Pux (noEffects, EffModel)
 import Pux.Html (Html, div, span, button, text)
 import Pux.Html.Events (onClick)
